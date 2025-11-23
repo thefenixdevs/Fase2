@@ -1,0 +1,1 @@
+simple .net template user web api working with Sqlite and jwt token generation and authorizatio, has docker files but not working yet.

@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.user
+**/*.suo
+**/.git/
+**/.gitignore
+**/node_modules/
+**/appsettings.Development.json
+**/*.md
+!README.md

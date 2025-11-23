@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: userapi-postgres
+    environment:
+      POSTGRES_DB: userapi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - userapi-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  userapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: userapi
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "Host=postgres;Port=5432;Database=userapi;Username=postgres;Password=postgres"
+      JWT_SECRET: "your-super-secret-jwt-key-change-this-in-production-min-32-chars"
+      JWT_ISSUER: "UserAPI"
+      JWT_AUDIENCE: "UserAPI"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - userapi-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  userapi-network:
+    driver: bridge
