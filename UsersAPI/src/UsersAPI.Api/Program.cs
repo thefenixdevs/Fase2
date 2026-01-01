@@ -1,10 +1,12 @@
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
+using UsersAPI.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
+builder.Services.AddInfrastructure(
+    builder.Configuration.GetConnectionString("DefaultConnection")!
+);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

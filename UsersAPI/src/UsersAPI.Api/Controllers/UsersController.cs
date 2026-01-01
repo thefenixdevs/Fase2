@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UsersAPI.Application.Requests;
 using UsersAPI.Application.Responses;
+using UsersAPI.Application.UseCases.CreateUser;
 
 namespace UsersAPI.Api.Controllers;
 
@@ -8,10 +9,33 @@ namespace UsersAPI.Api.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    [HttpPost]
-    public ActionResult<CreateUserResponse> Create(CreateUserRequest request)
+    private readonly ICreateUserUseCase _createUserUseCase;
+
+    public UsersController(ICreateUserUseCase createUserUseCase)
     {
-        // Call application use case (later)
-        return Ok();
+        _createUserUseCase = createUserUseCase;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
+    {
+        var result = await _createUserUseCase.ExecuteAsync(request);
+
+        if (!result.IsSuccess)
+        {
+            return result.Error!.Code switch
+            {
+                "validation_error" => BadRequest(result.Error),
+                "domain_validation_error" => BadRequest(result.Error),
+                "email_already_exists" => Conflict(result.Error),
+                _ => StatusCode(500, result.Error)
+            };
+        }
+
+        return CreatedAtAction(
+            nameof(Create),
+            new { id = result.Value!.UserId },
+            result.Value
+        );
     }
 }

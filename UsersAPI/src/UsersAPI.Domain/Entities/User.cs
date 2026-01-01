@@ -8,6 +8,10 @@ public class User : BaseEntity
     public Email Email { get; private set; }
     public string PasswordHash { get; private set; }
 
+    // 🔹 Construtor exclusivo para EF Core
+    protected User() { }
+
+    // 🔹 Construtor de domínio
     public User(string name, Email email, string passwordHash)
         : base()
     {
@@ -20,7 +24,6 @@ public class User : BaseEntity
             throw new ArgumentException("Password hash cannot be empty.", nameof(passwordHash));
 
         Name = name;
-        Email = email;
         PasswordHash = passwordHash;
     }
 
