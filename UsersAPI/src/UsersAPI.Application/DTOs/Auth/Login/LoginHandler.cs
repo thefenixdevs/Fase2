@@ -1,5 +1,6 @@
 ﻿using UsersAPI.Application.Interfaces;
 using UsersAPI.Domain.ValueObjects;
+using UsersAPI.Application.Common.Exceptions;
 
 namespace UsersAPI.Application.DTOs.Auth.Login
 {
@@ -24,12 +25,12 @@ namespace UsersAPI.Application.DTOs.Auth.Login
             var email = new Email(request.Email);
 
             var user = await _userRepository.GetByEmailAsync(email)
-                ?? throw new UnauthorizedAccessException("Invalid credentials");
+                ?? throw new UnauthorizedException("Invalid credentials");
 
             if (!_passwordHasher.Verify(
                 new Password(request.Password),
                 user.PasswordHash))
-                throw new UnauthorizedAccessException("Invalid credentials");
+                throw new UnauthorizedException("Invalid credentials");
 
             var token = _jwt.Generate(user);
 
