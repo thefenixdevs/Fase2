@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using UsersAPI.Application.Requests;
-using UsersAPI.Application.Responses;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.UseCases.CreateUser;
 
 namespace UsersAPI.Api.Controllers;
@@ -16,7 +16,7 @@ public class UsersController : ControllerBase
         _createUserUseCase = createUserUseCase;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
         var result = await _createUserUseCase.ExecuteAsync(request);
@@ -38,4 +38,12 @@ public class UsersController : ControllerBase
             result.Value
         );
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult Me()
+    {
+        return Ok(new { Message = "Authenticated!" });
+    }
+
 }

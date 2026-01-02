@@ -1,7 +1,6 @@
 using UsersAPI.Application.Common;
+using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.Interfaces;
-using UsersAPI.Application.Requests;
-using UsersAPI.Application.Responses;
 using UsersAPI.Application.Validators;
 using UsersAPI.Domain.Entities;
 using UsersAPI.Domain.ValueObjects;

@@ -5,7 +5,7 @@ using UsersAPI.Domain.ValueObjects;
 
 namespace UsersAPI.Infrastructure.Security;
 
-public class SimplePasswordHasher : IPasswordHasher
+public class PasswordHasher : IPasswordHasher
 {
     public string Hash(Password password)
     {
@@ -14,5 +14,11 @@ public class SimplePasswordHasher : IPasswordHasher
         var hash = sha256.ComputeHash(bytes);
 
         return Convert.ToBase64String(hash);
+    }
+
+    public bool Verify(Password password, string passwordHash)
+    {
+        var computedHash = Hash(password);
+        return computedHash == passwordHash;
     }
 }

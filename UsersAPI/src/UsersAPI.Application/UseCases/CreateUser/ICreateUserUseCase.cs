@@ -1,6 +1,5 @@
 ﻿using UsersAPI.Application.Common;
-using UsersAPI.Application.Requests;
-using UsersAPI.Application.Responses;
+using UsersAPI.Application.DTOs.CreateUser;
 
 namespace UsersAPI.Application.UseCases.CreateUser
 {

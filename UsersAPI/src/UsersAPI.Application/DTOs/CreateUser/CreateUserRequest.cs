@@ -1,4 +1,4 @@
-﻿namespace UsersAPI.Application.Requests;
+﻿namespace UsersAPI.Application.DTOs.CreateUser;
 
 /// <summary>
 /// Input data for the Create User use case.

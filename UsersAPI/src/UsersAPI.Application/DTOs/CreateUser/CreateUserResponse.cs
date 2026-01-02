@@ -1,4 +1,4 @@
-﻿namespace UsersAPI.Application.Responses;
+﻿namespace UsersAPI.Application.DTOs.CreateUser;
 
 /// <summary>
 /// Output data for the Create User use case.

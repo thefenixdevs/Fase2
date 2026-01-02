@@ -1,6 +1,6 @@
 using Moq;
+using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.Interfaces;
-using UsersAPI.Application.Requests;
 using UsersAPI.Application.UseCases.CreateUser;
 using UsersAPI.Domain.ValueObjects;
 using Xunit;

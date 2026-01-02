@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using UsersAPI.Application.DTOs.Auth.Login;
 using UsersAPI.Application.Interfaces;
 using UsersAPI.Application.UseCases.CreateUser;
 using UsersAPI.Infrastructure.Persistence;
@@ -18,8 +19,9 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IPasswordHasher, SimplePasswordHasher>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
         return services;
     }

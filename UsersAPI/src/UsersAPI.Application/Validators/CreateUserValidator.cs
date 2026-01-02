@@ -1,4 +1,4 @@
-﻿using UsersAPI.Application.Requests;
+﻿using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.Validation;
 
 namespace UsersAPI.Application.Validators;
