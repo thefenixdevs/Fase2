@@ -16,6 +16,16 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-test:
+    image: postgres:16
+    container_name: usersapi-postgres-test
+    environment:
+      POSTGRES_DB: users_test_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+
   api:
     build:
       context: .

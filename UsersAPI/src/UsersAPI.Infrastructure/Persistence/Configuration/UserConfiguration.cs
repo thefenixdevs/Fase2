@@ -19,6 +19,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash)
             .IsRequired();
 
+        builder.Property(u => u.Role)
+            .IsRequired()
+            .HasConversion<int>();
+
         builder.OwnsOne(u => u.Email, email =>
         {
             email.Property(e => e.Value)

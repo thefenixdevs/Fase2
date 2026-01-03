@@ -18,6 +18,17 @@ public sealed class AuthController : ControllerBase
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var result = await _handler.HandleAsync(request);
-        return Ok(result);
+
+        if (!result.Success)
+        {
+            return Unauthorized(new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Unauthorized",
+                Detail = result.Error
+            });
+        }
+
+        return Ok(new LoginResponse { AccessToken = result.Token! });
     }
 }

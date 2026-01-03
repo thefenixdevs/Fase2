@@ -20,25 +20,25 @@ namespace UsersAPI.Application.DTOs.Auth.Login
             _jwt = jwt;
         }
 
-        public async Task<LoginResponse> HandleAsync(LoginRequest request)
+        public async Task<LoginResult> HandleAsync(LoginRequest request)
         {
             var email = new Email(request.Email);
 
-            var user = await _userRepository.GetByEmailAsync(email)
-                ?? throw new UnauthorizedException("Invalid credentials");
+            var user = await _userRepository.GetByEmailAsync(email);
 
-            if (!_passwordHasher.Verify(
-                new Password(request.Password),
-                user.PasswordHash))
-                throw new UnauthorizedException("Invalid credentials");
+            if (user is null)
+                return LoginResult.InvalidCredentials();
+
+            var pwd = new Password(request.Password, true);
+
+            var isValid = _passwordHasher.Verify(pwd, user.PasswordHash);
+
+            if (!isValid)
+                return LoginResult.InvalidCredentials();
 
             var token = _jwt.Generate(user);
 
-            return new LoginResponse
-            {
-                AccessToken = token,
-                ExpiresAt = DateTime.UtcNow.AddHours(1)
-            };
+            return LoginResult.Ok(token);
         }
     }
 }
