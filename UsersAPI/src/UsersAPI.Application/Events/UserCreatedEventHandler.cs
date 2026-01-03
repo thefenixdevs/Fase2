@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using UsersAPI.Domain.Events;
 
-namespace UsersAPI.Application.Events
+namespace UsersAPI.Application.Events;
+
+public sealed class UserCreatedEventHandler
+    : IEventHandler<UserCreatedEvent>
 {
-    internal class UserCreatedEventHandler
+    private readonly ILogger<UserCreatedEventHandler> _logger;
+
+    public UserCreatedEventHandler(
+        ILogger<UserCreatedEventHandler> logger)
     {
+        _logger = logger;
+    }
+
+    public Task HandleAsync(UserCreatedEvent domainEvent)
+    {
+        _logger.LogInformation(
+            "User created | Id: {UserId} | Email: {Email} | At: {CreatedAt}",
+            domainEvent.UserId,
+            domainEvent.Email,
+            domainEvent.CreatedAt
+        );
+
+        return Task.CompletedTask;
     }
 }
