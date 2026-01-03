@@ -1,3 +1,4 @@
+using UsersAPI.Application.Abstractions;
 using UsersAPI.Application.Common;
 using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.Interfaces;
@@ -11,14 +12,17 @@ public class CreateUserUseCase : ICreateUserUseCase
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IDomainEventDispatcher _eventDispatcher;
     private readonly CreateUserValidator _validator = new();
 
     public CreateUserUseCase(
         IUserRepository userRepository,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        IDomainEventDispatcher eventDispatcher)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _eventDispatcher = eventDispatcher;
     }
 
     public async Task<Result<CreateUserResponse>> ExecuteAsync(CreateUserRequest request)
@@ -66,6 +70,8 @@ public class CreateUserUseCase : ICreateUserUseCase
         );
 
         await _userRepository.AddAsync(user);
+        await _eventDispatcher.DispatchAsync(user.DomainEvents);
+        user.ClearDomainEvents();
 
         return Result<CreateUserResponse>.Success(
             new CreateUserResponse

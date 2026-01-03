@@ -1,9 +1,9 @@
 using Moq;
+using UsersAPI.Application.Abstractions;
 using UsersAPI.Application.DTOs.CreateUser;
 using UsersAPI.Application.Interfaces;
 using UsersAPI.Application.UseCases.CreateUser;
 using UsersAPI.Domain.ValueObjects;
-using Xunit;
 
 namespace UsersAPI.Application.Tests.UseCases.CreateUser;
 
@@ -11,16 +11,19 @@ public class CreateUserUseCaseTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IPasswordHasher> _passwordHasherMock;
+    private readonly Mock<IDomainEventDispatcher> _eventDispatcherMock;
     private readonly CreateUserUseCase _useCase;
 
     public CreateUserUseCaseTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
         _passwordHasherMock = new Mock<IPasswordHasher>();
+        _eventDispatcherMock = new Mock<IDomainEventDispatcher>();
 
         _useCase = new CreateUserUseCase(
             _userRepositoryMock.Object,
-            _passwordHasherMock.Object
+            _passwordHasherMock.Object,
+            _eventDispatcherMock.Object
         );
     }
 

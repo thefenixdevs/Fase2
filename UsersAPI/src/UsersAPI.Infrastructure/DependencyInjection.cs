@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using UsersAPI.Application.Abstractions;
 using UsersAPI.Application.DTOs.Auth.Login;
 using UsersAPI.Application.Interfaces;
 using UsersAPI.Application.UseCases.CreateUser;
+using UsersAPI.Infrastructure.Messaging;
 using UsersAPI.Infrastructure.Persistence;
 using UsersAPI.Infrastructure.Repositories;
 using UsersAPI.Infrastructure.Security;
@@ -22,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         return services;
     }

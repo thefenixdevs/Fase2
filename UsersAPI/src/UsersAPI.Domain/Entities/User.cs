@@ -1,4 +1,5 @@
-﻿using UsersAPI.Domain.ValueObjects;
+﻿using UsersAPI.Domain.Events;
+using UsersAPI.Domain.ValueObjects;
 
 namespace UsersAPI.Domain.Entities;
 
@@ -27,6 +28,14 @@ public class User : BaseEntity
         Name = name;
         PasswordHash = passwordHash;
         Role = role;
+
+        this.AddDomainEvent(
+            new UserCreatedEvent(
+                this.Id,
+                this.Email.Value,
+                this.CreatedAt
+            )
+        );
     }
 
     public void ChangeName(string newName)
