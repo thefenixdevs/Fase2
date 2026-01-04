@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: usersapi-config
+  namespace: usersapi
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  RabbitMQ__Host: "rabbitmq"
+  Jwt__Issuer: "UsersAPI"
+  Jwt__Audience: "UsersAPI"
