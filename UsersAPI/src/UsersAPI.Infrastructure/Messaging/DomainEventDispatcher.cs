@@ -29,7 +29,7 @@ public sealed class DomainEventDispatcher
                 if (method is null)
                     continue;
 
-                await (Task)method.Invoke(handler, new[] { domainEvent })!;
+                await (Task)method.Invoke(handler, new[] { domainEvent, null })!;
             }
         }
     }

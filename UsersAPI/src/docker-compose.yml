@@ -26,6 +26,19 @@ services:
     ports:
       - "5433:5432"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: usersapi-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
   api:
     build:
       context: .
@@ -34,11 +47,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=users_db;Username=postgres;Password=postgres
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
     ports:
       - "5000:8080"
+    volumes:
+      - ./Logs:/app/Logs   # 👈 ADIÇÃO AQUI
 
 volumes:
   postgres_data:
+  rabbitmq_data:

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MassTransit;
+using Microsoft.Extensions.Logging;
 using UsersAPI.Domain.Events;
 
 namespace UsersAPI.Application.Events;
@@ -7,14 +8,17 @@ public sealed class UserCreatedEventHandler
     : IEventHandler<UserCreatedEvent>
 {
     private readonly ILogger<UserCreatedEventHandler> _logger;
+    private readonly IPublishEndpoint _publishEndpoint;
+
 
     public UserCreatedEventHandler(
-        ILogger<UserCreatedEventHandler> logger)
+        ILogger<UserCreatedEventHandler> logger, IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
+        _publishEndpoint = publishEndpoint;
     }
 
-    public Task HandleAsync(UserCreatedEvent domainEvent)
+    public async Task HandleAsync(UserCreatedEvent domainEvent, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             "User created | Id: {UserId} | Email: {Email} | At: {CreatedAt}",
@@ -23,6 +27,17 @@ public sealed class UserCreatedEventHandler
             domainEvent.CreatedAt
         );
 
-        return Task.CompletedTask;
+        _logger.LogInformation(
+            "Publishing UserCreatedIntegrationEvent for UserId {UserId}",
+            domainEvent.UserId
+        );
+
+        var integrationEvent = new UserCreatedIntegrationEvent(
+            domainEvent.UserId,
+            domainEvent.Email,
+            DateTime.UtcNow
+        );
+
+        await _publishEndpoint.Publish(integrationEvent, cancellationToken);
     }
 }

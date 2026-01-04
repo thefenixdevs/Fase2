@@ -1,6 +1,8 @@
-﻿namespace UsersAPI.Application.Events;
+﻿using UsersAPI.Domain.Events;
+
+namespace UsersAPI.Application.Events;
 
 public interface IEventHandler<in TEvent>
 {
-    Task HandleAsync(TEvent domainEvent);
+    Task HandleAsync(UserCreatedEvent domainEvent, CancellationToken cancellationToken = default);
 }

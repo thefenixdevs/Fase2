@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -7,10 +8,19 @@ using System.Text;
 using UsersAPI.Api.Middlewares;
 using UsersAPI.Application;
 using UsersAPI.Infrastructure;
+using UsersAPI.Infrastructure.Messaging.Consumers;
 using UsersAPI.Infrastructure.Persistence;
 using UsersAPI.Infrastructure.Persistence.Seed;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddApplication();
@@ -72,7 +82,30 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedIntegrationEventConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        var host = builder.Configuration["RabbitMQ:Host"];
+
+        cfg.Host(host, "/", h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:Username"]);
+            h.Password(builder.Configuration["RabbitMQ:Password"]);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 var app = builder.Build();
+
+app.Logger.LogInformation(
+    "Connecting to RabbitMQ at {Host}",
+    builder.Configuration["RabbitMQ:Host"]
+);
 
 if (!app.Environment.IsEnvironment("Test"))
 {
