@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Security.Claims;
 using System.Text;
 using UsersAPI.Api.Middlewares;
@@ -11,7 +12,6 @@ using UsersAPI.Infrastructure;
 using UsersAPI.Infrastructure.Messaging.Consumers;
 using UsersAPI.Infrastructure.Persistence;
 using UsersAPI.Infrastructure.Persistence.Seed;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,8 @@ builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
         .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services);
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext();
 });
 
 builder.Services.AddControllers();
@@ -40,7 +41,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+            ),
+
             RoleClaimType = ClaimTypes.Role
         };
     });
@@ -88,9 +91,9 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        var host = builder.Configuration["RabbitMQ:Host"];
+        var rabbitHost = builder.Configuration["RabbitMQ:Host"];
 
-        cfg.Host(host, "/", h =>
+        cfg.Host(rabbitHost, "/", h =>
         {
             h.Username(builder.Configuration["RabbitMQ:Username"]);
             h.Password(builder.Configuration["RabbitMQ:Password"]);
@@ -103,20 +106,25 @@ builder.Services.AddMassTransit(x =>
 var app = builder.Build();
 
 app.Logger.LogInformation(
-    "Connecting to RabbitMQ at {Host}",
+    "Starting UsersAPI | Environment: {Env}",
+    app.Environment.EnvironmentName
+);
+
+app.Logger.LogInformation(
+    "RabbitMQ Host: {Host}",
     builder.Configuration["RabbitMQ:Host"]
 );
 
 if (!app.Environment.IsEnvironment("Test"))
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
-        db.Database.Migrate();
+    using var scope = app.Services.CreateScope();
 
-        // 🌱 Admin Seeder (PROD / DEV)
-        AdminUserSeeder.Seed(db);
-    }
+    var db = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
+
+    db.Database.Migrate();
+
+    // 🌱 Admin user seed (DEV / PROD)
+    AdminUserSeeder.Seed(db);
 }
 
 if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Test"))
