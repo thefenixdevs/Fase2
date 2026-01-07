@@ -9,7 +9,6 @@ using System.Text;
 using UsersAPI.Api.Middlewares;
 using UsersAPI.Application;
 using UsersAPI.Infrastructure;
-using UsersAPI.Infrastructure.Messaging.Consumers;
 using UsersAPI.Infrastructure.Persistence;
 using UsersAPI.Infrastructure.Persistence.Seed;
 

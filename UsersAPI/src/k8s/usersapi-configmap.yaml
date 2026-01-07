@@ -4,7 +4,7 @@ metadata:
   name: usersapi-config
   namespace: usersapi
 data:
-  ASPNETCORE_ENVIRONMENT: "Production"
-  RabbitMQ__Host: "rabbitmq"
+  RabbitMQ__Host: rabbitmq
+  RabbitMQ__Username: rabbitmq
   Jwt__Issuer: "UsersAPI"
   Jwt__Audience: "UsersAPI"

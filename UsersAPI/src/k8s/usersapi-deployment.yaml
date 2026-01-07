@@ -4,7 +4,7 @@ metadata:
   name: usersapi
   namespace: usersapi
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: usersapi
@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: usersapi
-          image: userapi-api:1
-          imagePullPolicy: Never
+          image: userapi-api:2
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:
