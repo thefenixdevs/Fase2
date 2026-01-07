@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: usersapi
-          image: your-dockerhub/usersapi:latest
-          imagePullPolicy: Always
+          image: userapi-api:1
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           envFrom:

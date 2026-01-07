@@ -28,7 +28,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: usersapi-rabbitmq
+    container_name: gamestore-rabbitmq
     restart: unless-stopped
     ports:
       - "5672:5672"
@@ -38,6 +38,11 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
@@ -48,7 +53,7 @@ services:
       postgres:
         condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=users_db;Username=postgres;Password=postgres
@@ -59,7 +64,7 @@ services:
     ports:
       - "5000:8080"
     volumes:
-      - ./Logs:/app/Logs   # 👈 ADIÇÃO AQUI
+      - ./Logs:/app/Logs
 
 volumes:
   postgres_data:

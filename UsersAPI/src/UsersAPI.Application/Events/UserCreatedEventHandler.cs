@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
+using Shared.Contracts.Events;
 using UsersAPI.Domain.Events;
 
 namespace UsersAPI.Application.Events;

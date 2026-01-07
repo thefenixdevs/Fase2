@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using UsersAPI.Application.Events;
+using Shared.Contracts.Events;
 
 namespace UsersAPI.Infrastructure.Messaging.Consumers
 {

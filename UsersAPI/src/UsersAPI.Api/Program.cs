@@ -87,7 +87,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<UserCreatedIntegrationEventConsumer>();
+    //x.AddConsumer<UserCreatedIntegrationEventConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {

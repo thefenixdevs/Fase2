@@ -6,7 +6,8 @@ metadata:
 spec:
   selector:
     app: usersapi
+  type: NodePort # Alterado de ClusterIP para NodePort
   ports:
-    - port: 80
-      targetPort: 8080
-  type: ClusterIP
+    - port: 80          # Porta do serviço (interna ao cluster)
+      targetPort: 8080  # Porta onde sua aplicação Spring/Node/Python está rodando
+      nodePort: 30080   # Porta que você vai usar no navegador/Postman (ex: http://IP:30080)
