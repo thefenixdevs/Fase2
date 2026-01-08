@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: usersapi
+  name: usersapi-deployment
+  labels:
+    app: usersapi
   namespace: usersapi
 spec:
   replicas: 1
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: usersapi
-          image: userapi-api:2
+          image: usersapi-api:5
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -24,15 +26,13 @@ spec:
                 name: usersapi-config
             - secretRef:
                 name: usersapi-secrets
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 20
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Development"
