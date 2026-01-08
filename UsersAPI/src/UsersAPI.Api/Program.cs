@@ -92,7 +92,7 @@ builder.Services.AddMassTransit(x =>
     {
         var rabbitHost = builder.Configuration["RabbitMQ:Host"];
 
-        cfg.Host(rabbitHost, "/", h =>
+        cfg.Host(host: rabbitHost, port: 30672, virtualHost: "/", h =>
         {
             h.Username(builder.Configuration["RabbitMQ:Username"]);
             h.Password(builder.Configuration["RabbitMQ:Password"]);
@@ -135,7 +135,10 @@ if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Test"))
     });
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

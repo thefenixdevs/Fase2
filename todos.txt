@@ -1,0 +1,8 @@
+Adriano - Vai ficar responsável por consertar o k8s entre a UsersApi e NotificationAPI
+
+Soares - PaymentsAPI: Se o Price da mensagem OrderPlacedEvent for 0 então publica uma mensagem PaymentProcessedEvent com o status Rejected, se o Price > 0 então publica com o Status Approved
+
+Junnon - CatalogAPI: seed pra dar carga em uns jogos, terá o proprio banco de postgres, tabela que relacione usuário e jogos, endpoint de listagem de jogos, endpoint para requisição
+de compra de um jogo(precisar estar autenticado) e vai gerar uma mensagem OrderPlacedEvent contendo o UserId, GameId e Price.
+
+Farias - Criar os 4 repositório finais para entrega, criar um readme de cada um e organizar o documento de entrega e ajudar com o k8s.

@@ -56,13 +56,16 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTPS_PORT: 8443
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=users_db;Username=postgres;Password=postgres
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: guest
       RabbitMQ__Password: guest
       Jwt__Key: super-secret-docker-key-change-this-32chars-min
+      MT_LICENSE: Community
     ports:
       - "5000:8080"
+      - "5001:8443"
     volumes:
       - ./Logs:/app/Logs
 
