@@ -2,7 +2,7 @@
 # kind: Deployment
 # metadata:
 #   name: rabbitmq
-#   namespace: usersapi
+#   namespace: gamestore
 # spec:
 #   replicas: 1
 #   selector:

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: usersapi-service
-  namespace: usersapi
+  namespace: gamestore
 spec:
   type: NodePort
   selector:

@@ -2,7 +2,7 @@
 # kind: PersistentVolumeClaim
 # metadata:
 #   name: rabbitmq-pvc
-#   namespace: usersapi
+#   namespace: gamestore
 # spec:
 #   accessModes:
 #     - ReadWriteOnce

@@ -2,7 +2,7 @@
 # kind: Service
 # metadata:
 #   name: rabbitmq
-#   namespace: usersapi
+#   namespace: gamestore
 # spec:
 #   selector:
 #     app: rabbitmq

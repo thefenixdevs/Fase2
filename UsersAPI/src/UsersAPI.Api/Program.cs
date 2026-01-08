@@ -91,8 +91,9 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         var rabbitHost = builder.Configuration["RabbitMQ:Host"];
+        var rabbitPort = ushort.Parse(builder.Configuration["RabbitMQ:Port"]);
 
-        cfg.Host(host: rabbitHost, port: 30672, virtualHost: "/", h =>
+        cfg.Host(host: rabbitHost, port: rabbitPort, virtualHost: "/", h =>
         {
             h.Username(builder.Configuration["RabbitMQ:Username"]);
             h.Password(builder.Configuration["RabbitMQ:Password"]);

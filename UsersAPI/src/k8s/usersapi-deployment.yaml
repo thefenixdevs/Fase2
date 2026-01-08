@@ -4,7 +4,7 @@ metadata:
   name: usersapi-deployment
   labels:
     app: usersapi
-  namespace: usersapi
+  namespace: gamestore
 spec:
   replicas: 1
   selector:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: usersapi
-          image: usersapi-api:5
+          image: usersapi-api:8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
